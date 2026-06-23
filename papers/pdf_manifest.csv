@@ -1,0 +1,12 @@
+key,local_file,source_url,status
+CAPS,pdfs/2025_AAAI_CAPS_constraint_adaptive_policy_switching.pdf,https://ojs.aaai.org/index.php/AAAI/article/view/33726/35881,downloaded
+AEGIS,pdfs/2026_ICLRsub_AEGIS_almost_surely_safe_offline_rl.pdf,https://openreview.net/pdf?id=jLgGlHj30G,downloaded
+BCRL,pdfs/2026_ICAPS_BCRL_budget_conditioned_reachability.pdf,https://arxiv.org/pdf/2603.22292,downloaded
+RPS,pdfs/2026_arXiv_robust_probabilistic_shielding_osrl.pdf,https://arxiv.org/pdf/2605.10293,downloaded
+CSS,pdfs/2025_arXiv_conformal_safety_shielding.pdf,https://arxiv.org/pdf/2506.17275,downloaded
+CPSF,pdfs/2023_RAL_conformal_predictive_safety_filter.pdf,https://arxiv.org/pdf/2306.02551,downloaded
+TREBI,pdfs/2023_ICML_TREBI_realtime_budget_constraints.pdf,https://arxiv.org/pdf/2306.00603,downloaded
+TraC,pdfs/2025_AAAI_TraC_trajectory_classification.pdf,https://ojs.aaai.org/index.php/AAAI/article/view/33855/36010,downloaded
+WSAC,pdfs/2024_NeurIPS_WSAC_safe_offline_rl.pdf,https://openreview.net/pdf?id=82Ndsr4OS6,downloaded
+O3SRL,pdfs/2025_NeurIPS_O3SRL_online_optimization_osrl.pdf,https://openreview.net/pdf?id=e85xf2d17F,downloaded
+SafetyGymnasium,pdfs/2023_NeurIPS_Safety_Gymnasium.pdf,https://openreview.net/pdf?id=WZmlxIuIGR,downloaded

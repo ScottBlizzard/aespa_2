@@ -1,0 +1,72 @@
+\documentclass[letterpaper]{article}
+\usepackage[submission]{aaai2027}
+\usepackage[hyphens]{url}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\urlstyle{rm}
+\def\UrlFont{\rm}
+\frenchspacing
+\setlength{\pdfpagewidth}{8.5in}
+\setlength{\pdfpageheight}{11in}
+\pdfinfo{
+/TemplateVersion (2027.1)
+}
+
+\setcounter{secnumdepth}{0}
+
+\title{Safety Is a Claim, Not a Cost: Calibrated Action Certificates for Offline RL under Moving Constraints}
+
+\author{
+    Anonymous Submission
+}
+\affiliations{
+    Paper ID withheld for double-blind review.
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Offline safe reinforcement learning is usually evaluated by aggregate reward and cost under one or a few constraint budgets.
+This is an incomplete form of deployment evidence: a policy can satisfy an aggregate episode budget while relying on actions whose safety claims are unsupported under the requested deployment constraint.
+We study this deployability gap and propose action-conditional conformal certificates (ACCS), a post-hoc protocol that turns candidate policy actions into calibrated action-level safety claims with explicit provenance.
+ACCS builds a budget-uniform upper-cost certificate surface, executes or replaces actions whose claims are supported, and abstains when calibration evidence is insufficient.
+The intended contribution is not another constraint-adaptive policy optimizer, but a deployment evidence layer that can wrap offline safe RL methods, including strong policy-switching competitors.
+\end{abstract}
+
+\section{Introduction}
+
+The current draft route is maintained in \texttt{../idea\_blueprint.md}.
+This file is a format-valid AAAI-27 skeleton only; paper-facing claims must not be added before the Phase 0 literature gate and Phase 1 deployability-gap toy phenomenon are recorded.
+
+\section{Problem Setup}
+
+We consider an offline dataset collected under a behavior policy, a learned base policy, and deployment requests specified by cost budgets or safety constraints that may differ from those used during training or model selection.
+
+\section{Method}
+
+ACCS will be described as a budget-uniform claim-issuing protocol:
+
+\begin{enumerate}
+    \item fit nonconformity scores for candidate actions on a held-out calibration split;
+    \item condition calibration by action groups, budget ranges, or risk clusters;
+    \item execute, replace, or abstain according to the calibrated action-safety claim;
+    \item report certified utility, claim yield, claim miscoverage, unsupported safety success, budget adaptivity, and horizon-level audit metrics.
+\end{enumerate}
+
+\section{Experiments}
+
+The first experiment must establish a clean deployability-gap failure mode before broad benchmark runs.
+Direct competitors and reusable benchmark code are tracked in \texttt{../papers/literature\_review.md}.
+
+\section{Conclusion}
+
+Placeholder.
+
+\bibliography{references}
+
+\end{document}

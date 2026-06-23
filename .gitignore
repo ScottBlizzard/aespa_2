@@ -1,0 +1,23 @@
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+
+# Downloaded author-kit archive/extraction noise
+aaai2027/AAAI-27_AuthorKit.zip
+aaai2027/official_author_kit/
+
+# Python / local runtime cache
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Local editor/system files
+.DS_Store
+Thumbs.db
