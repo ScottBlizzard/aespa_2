@@ -1,6 +1,6 @@
 # src Code Plan
 
-This directory will contain the ACCS implementation and experiment runners.
+This directory will contain the selection-aware calibration implementation and experiment runners.
 
 ## Planned Modules
 
@@ -8,16 +8,19 @@ This directory will contain the ACCS implementation and experiment runners.
 |---|---|
 | `config.py` | Common paths, seeds, budgets, alpha values, environment config. |
 | `data_io.py` | JSON/JSONL/CSV helpers. |
-| `toy_env.py` | Moving-budget toy safe RL environment. |
+| `toy_selection_failure.py` | Exact finite MDP / one-state K-action counterexample. |
 | `offline_data.py` | Offline trajectory generation and train/calibration/test splits. |
 | `cost_model.py` | Cost-return predictor and ensemble utilities. |
-| `action_groups.py` | Action/risk group construction. |
-| `conformal.py` | Nonconformity scores, conformal quantiles, hierarchical fallback. |
-| `shield.py` | ACCS execute/replace/abstain logic. |
-| `eval_metrics.py` | Utility, calibration, adaptivity, horizon metrics. |
-| `baselines.py` | No shield, global conformal, state-only, pessimism baselines. |
-| `run_phase1_toy.py` | Toy moving-budget main phenomenon. |
-| `run_phase2_accs.py` | ACCS prototype and diagnostics. |
+| `proposal_stream.py` | Fixed proposal/query-bank interface and candidate-set construction. |
+| `continuation.py` | Declared continuation policy and fallback policy interfaces. |
+| `conformal.py` | Global and group split-conformal primitives. |
+| `risk_control.py` | Conformal risk control and selective/FCR baseline hooks. |
+| `selection.py` | Highest-reward certified action and alternative selection rules. |
+| `support.py` | Support diagnostics and no-overlap abstention. |
+| `eval_metrics.py` | False certification, claim yield, risk-coverage, utility, fallback cost, horizon metrics. |
+| `baselines.py` | Uncalibrated score, global CP, group CP, CRC/selective baselines. |
+| `run_phase1_toy.py` | Exact selection-failure toy phenomenon. |
+| `run_phase2_accs.py` | Selection-aware ACCS prototype and diagnostics. |
 | `run_phase3_safety_gym.py` | Safety-Gymnasium benchmark. |
 | `run_phase4_dsrl.py` | DSRL benchmark. |
 | `plot_paper_figures.py` | Generate tables/figures from canonical outputs. |
@@ -32,4 +35,3 @@ Experiment runners should write machine-readable JSON and optional Markdown summ
 ```
 
 Local smoke tests should include `local_smoke` in the filename and must not be used as paper evidence.
-

@@ -3,6 +3,17 @@
 > Last updated: 2026-06-23  
 > Purpose: external high-reasoning review prompt for AAAI_2 after the oral upgrade.
 
+## Status
+
+This prompt was used to obtain `analysis/AI_Safety_Thesis_Review.md`. Do not reuse it as the active thesis prompt. The active route after that review is:
+
+```text
+Calibration After Action Selection:
+learned safe-RL scores can be marginally calibrated before deployment,
+but false certification can concentrate among actions selected and executed
+under candidate-action and moving-budget queries.
+```
+
 ## Files To Provide
 
 Minimum package:

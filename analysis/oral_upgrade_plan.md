@@ -3,6 +3,27 @@
 > Last updated: 2026-06-23  
 > Purpose: upgrade AAAI_2 from a solid AAAI paper into an oral-ambition paper after the Phase 0 literature gate.
 
+## Status After External Review
+
+This file records the first oral-upgrade attempt. It has been partially superseded by `AI_Safety_Thesis_Review.md` and the follow-up edits on 2026-06-23.
+
+The current preferred route is no longer the broad slogan:
+
+```text
+Safety is a claim, not a cost.
+```
+
+The current preferred route is:
+
+```text
+Calibration After Action Selection:
+learned safe-RL scores can be marginally calibrated before deployment,
+but false certification can concentrate among actions selected and executed
+under candidate-action and moving-budget queries.
+```
+
+Keep this file as context, but use `idea_blueprint.md`, `theory_proofs.md`, `NEXT_STEPS.md`, and `analysis/claim_evidence_map.md` as the active route.
+
 ## Verdict
 
 The current ACCS route is viable, but the paper must be upgraded from:

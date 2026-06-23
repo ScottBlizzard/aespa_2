@@ -17,7 +17,7 @@
 
 \setcounter{secnumdepth}{0}
 
-\title{Safety Is a Claim, Not a Cost: Calibrated Action Certificates for Offline RL under Moving Constraints}
+\title{Calibration After Action Selection: Safety Claims for Offline RL under Moving Budgets}
 
 \author{
     Anonymous Submission
@@ -31,17 +31,17 @@
 \maketitle
 
 \begin{abstract}
-Offline safe reinforcement learning is usually evaluated by aggregate reward and cost under one or a few constraint budgets.
-This is an incomplete form of deployment evidence: a policy can satisfy an aggregate episode budget while relying on actions whose safety claims are unsupported under the requested deployment constraint.
-We study this deployability gap and propose action-conditional conformal certificates (ACCS), a post-hoc protocol that turns candidate policy actions into calibrated action-level safety claims with explicit provenance.
-ACCS builds a budget-uniform upper-cost certificate surface, executes or replaces actions whose claims are supported, and abstains when calibration evidence is insufficient.
-The intended contribution is not another constraint-adaptive policy optimizer, but a deployment evidence layer that can wrap offline safe RL methods, including strong policy-switching competitors.
+Offline safe reinforcement learning methods often select deployment actions by thresholding learned cost or feasibility scores.
+Even when these scores admit marginal conformal calibration over candidate proposals, deployment-time action selection can concentrate calibration errors among the actions that are actually certified and executed.
+We study this calibration-after-selection problem for offline safe RL under moving budget queries.
+The intended contribution is not another constraint-adaptive policy optimizer, but a selection-aware auditor that targets false certification among issued action claims for a declared proposal stream, continuation policy, and support condition.
+The first required evidence is an exact counterexample showing that ordinary global or group conformal calibration can remain nominal over proposals while failing after action selection.
 \end{abstract}
 
 \section{Introduction}
 
 The current draft route is maintained in \texttt{../idea\_blueprint.md}.
-This file is a format-valid AAAI-27 skeleton only; paper-facing claims must not be added before the Phase 0 literature gate and Phase 1 deployability-gap toy phenomenon are recorded.
+This file is a format-valid AAAI-27 skeleton only; paper-facing claims must not be added before the Phase 0 literature gate and Phase 1 exact selection-failure toy phenomenon are recorded.
 
 \section{Problem Setup}
 
@@ -49,18 +49,18 @@ We consider an offline dataset collected under a behavior policy, a learned base
 
 \section{Method}
 
-ACCS will be described as a budget-uniform claim-issuing protocol:
+ACCS will be described as a selection-aware auditing protocol:
 
 \begin{enumerate}
-    \item fit nonconformity scores for candidate actions on a held-out calibration split;
-    \item condition calibration by action groups, budget ranges, or risk clusters;
-    \item execute, replace, or abstain according to the calibrated action-safety claim;
-    \item report certified utility, claim yield, claim miscoverage, unsupported safety success, budget adaptivity, and horizon-level audit metrics.
+    \item define the proposal stream, action-selection rule, continuation policy, fallback, and residual-cost target;
+    \item show why ordinary marginal conformal calibration can fail among selected claims;
+    \item control or diagnose false certification among issued claims using selection-aware calibration/risk control;
+    \item report false certification, claim yield, risk-coverage, utility, fallback cost, and horizon-level audit metrics.
 \end{enumerate}
 
 \section{Experiments}
 
-The first experiment must establish a clean deployability-gap failure mode before broad benchmark runs.
+The first experiment must establish a clean selection-induced calibration failure before broad benchmark runs.
 Direct competitors and reusable benchmark code are tracked in \texttt{../papers/literature\_review.md}.
 
 \section{Conclusion}

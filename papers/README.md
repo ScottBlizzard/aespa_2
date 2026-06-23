@@ -18,7 +18,10 @@ references.bib        literature-gate bibliography
 | Bucket | Purpose |
 |---|---|
 | Offline safe RL | CQL-Lagrangian, BCQ-Lagrangian, CPQ, COptiDICE, DSRL baselines. |
+| Direct action-feasibility competitors | CAPS, SafeFQL, AEGIS, BCRL, Robust Probabilistic Shielding. |
 | Conformal prediction | split conformal, weighted conformal, online conformal, risk control. |
+| Selection-aware conformal | CAP / selective conformal, FCR control, conformal risk control. |
+| Off-policy conformal | residual-cost target mismatch and target-policy calibration. |
 | Safe shielding | action shields, safety filters, control barrier functions where relevant. |
 | Deployment shift | constraint shift, policy shift, offline-to-online mismatch. |
 | Selective prediction / abstention | calibrate-or-abstain framing. |

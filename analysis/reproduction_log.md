@@ -29,6 +29,7 @@ No server environment setup recorded yet.
 | 2026-06-23 | local | `Invoke-WebRequest https://aaai.org/authorkit27/` and `Expand-Archive` | `aaai2027/official_author_kit/`, `aaai2027/aaai2027.sty`, `aaai2027/aaai2027.bst` | completed | Official AAAI-27 template downloaded from AAAI. |
 | 2026-06-23 | local/web | literature search over OSRL moving-budget, shielding, conformal safety, and benchmark papers | `papers/*`, `analysis/literature_threat_map.md` | completed | CAPS identified as critical direct competitor. |
 | 2026-06-23 | local/web | `Invoke-WebRequest` over critical paper PDF URLs | `papers/pdfs/*.pdf`, `papers/pdf_manifest.csv` | completed | 11 critical PDFs downloaded. |
+| 2026-06-23 | local/web | `Invoke-WebRequest` over SafeFQL/selective-conformal theory PDF URLs | `papers/pdfs/*SafeFQL*.pdf`, `papers/pdfs/*CAP_selective*.pdf`, `papers/pdfs/*conditional_predictive*.pdf`, `papers/pdfs/*off_policy*.pdf`, `papers/pdfs/*conformal_risk_control*.pdf` | completed | 5 additional PDFs downloaded after external review. |
 
 ---
 
@@ -38,3 +39,4 @@ No server environment setup recorded yet.
 |---|---|---|---|
 | 2026-06-23 | `pdflatex -interaction=nonstopmode -halt-on-error paper.tex` in `aaai2027/` | `aaai2027/paper.pdf` | completed |
 | 2026-06-23 | `pdflatex -interaction=nonstopmode -halt-on-error paper.tex` in `aaai2027/` after oral title/abstract upgrade | `aaai2027/paper.pdf` | completed |
+| 2026-06-23 | `pdflatex -interaction=nonstopmode -halt-on-error paper.tex` in `aaai2027/` after selection-aware route rewrite | `aaai2027/paper.pdf` | completed |

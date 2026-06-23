@@ -11,41 +11,57 @@ The naive claim is already taken:
 Offline safe RL under changing deployment constraints without retraining.
 ```
 
-CAPS is the direct prior and must be treated as the first competitor, not background. TREBI, AEGIS, and BCRL also occupy parts of the moving-budget / any-budget safety space.
+CAPS is the direct prior and must be treated as the first competitor, not background. TREBI, AEGIS, BCRL, Robust Probabilistic Shielding, and SafeFQL also occupy parts of the moving-budget / action-feasibility / conformal-safety space.
 
 The viable AAAI_2 novelty boundary is narrower but still strong:
 
 ```text
-ACCS is a post-hoc deployment-evidence layer: it issues calibrated,
-action-level safety claims with provenance, exposes unsupported actions,
-and abstains when evidence is insufficient.
-It does not claim to learn the best constraint-adaptive policy.
+ACCS is not a generic conformal shield. It must become a selection-aware
+finite-data auditor: it controls or diagnoses false certification among
+actions actually selected under deployment-time candidate/action/budget queries.
+It does not claim to be the first method to identify feasible actions.
 ```
 
 This framing can still be high-ceiling because it changes the evaluation question:
 
 ```text
-not "which policy gets high return under a budget?"
-but "which deployment-time action claims can be issued with finite-sample evidence?"
+not "which actions have low learned cost?"
+but "after deployment-time action selection, which issued safety claims remain calibrated?"
+```
+
+The recommended thesis after the GPTPro review is:
+
+```text
+A learned cost or feasibility estimate is not a calibrated deployment certificate.
 ```
 
 ## Direct Competitors
 
 ### CAPS: critical threat and primary baseline
 
-CAPS targets the same high-level pain point: deployment constraints can vary after offline training. It learns multiple policies with shared representation and switches at test time among policies that satisfy the current cost constraint.
+CAPS targets the same high-level pain point: deployment constraints can vary after offline training. It also performs action-level candidate filtering at each state using learned cost values and a fallback when no candidate is feasible.
 
 Implication for AAAI_2:
 
 - Do not sell "constraint-adaptive without retraining" as the main novelty.
 - Use CAPS as the strongest baseline and probably as a base policy family.
-- The ACCS difference must be: action-level calibrated claim provenance, abstention, and post-hoc evidence, not policy switching.
+- The ACCS difference must be: finite-data calibration after CAPS-style action selection, not the mere existence of action filtering.
 
 Required experiments:
 
 - ACCS wrapping one fixed policy vs CAPS.
 - ACCS wrapping CAPS outputs, if integration is feasible.
-- CAPS vs CAPS+ACCS on claim yield, claim miscoverage, certified utility, and abstention, not only reward/cost.
+- CAPS vs CAPS+global CP vs CAPS+group CP vs CAPS+selection-aware ACCS on false certification among issued claims, claim yield, utility, fallback cost, and episode risk.
+
+### SafeFQL: critical threat
+
+SafeFQL combines reachability-style safe offline RL, deployment-time safe action selection, and conformal calibration of the learned safety boundary. It kills any broad claim that ACCS is the first conformal or finite-sample safety-calibrated offline safe RL method.
+
+Implication for AAAI_2:
+
+- Add SafeFQL as a direct baseline or at least a required ablation target in the exact toy / Safety-Gym setting.
+- Claim novelty only where SafeFQL does not directly operate: selection-aware false-certification control under candidate selection, moving budgets, arbitrary base scores, and explicit support abstention.
+- Do not claim "first conformal offline safe RL" or "first finite-sample safety certificate."
 
 ### AEGIS: critical threat
 
@@ -120,24 +136,29 @@ Unsafe claims:
 - "First wrapper for offline safe RL under changing budgets."
 - "Guarantees trajectory safety under arbitrary budgets."
 - "Solves distribution shift."
+- "First conformal method for offline safe RL."
+- "Existing methods do not identify feasible actions."
 
 Safer claims:
 
-- "We reframe deployment-time safety as a calibrated action-level evidence problem."
-- "We provide a post-hoc conformal action-safety claim protocol with provenance and abstention under insufficient calibration evidence."
+- "We study calibration after deployment-time action selection in offline safe RL."
+- "We audit learned action-feasibility scores for false certification among issued claims."
 - "We show fixed-budget evidence can fail under moving constraints, even when expected-cost metrics look acceptable."
-- "We evaluate certified utility, claim yield, claim miscoverage, unsupported safety success, adaptivity, and horizon-level audit jointly."
+- "We evaluate false certification among issued claims, claim yield, risk-coverage, utility at controlled risk, fallback cost, and horizon-level audit jointly."
 
 ## Required Full-PDF Reading
 
 Before implementing broad benchmarks, read and annotate:
 
 1. CAPS: method, proof assumptions, 38-task DSRL protocol, code entry points.
-2. AEGIS: feasibility critics, any-budget claim, diffusion policy assumptions.
-3. BCRL: budget-conditioned reachability definitions and guarantees.
-4. Robust Probabilistic Shielding: shielding contract and offline-data assumptions.
-5. Conformal Safety Shielding: exact conformal guarantee and limitation.
-6. DSRL / OSRL: dataset splits, baseline scripts, reporting format.
+2. SafeFQL: conformal calibration of learned safety boundary, action selection, benchmark scope.
+3. AEGIS: feasibility critics, any-budget claim, diffusion policy assumptions.
+4. BCRL: budget-conditioned reachability definitions and guarantees.
+5. Robust Probabilistic Shielding: shielding contract and offline-data assumptions.
+6. CAP / selective conformal: post-selection and FCR control.
+7. Conformal risk control: false certification risk as the target.
+8. Off-policy conformal: policy-specific target mismatch.
+9. DSRL / OSRL: dataset splits, baseline scripts, reporting format.
 
 ## Decision
 
@@ -145,6 +166,6 @@ Proceed with AAAI_2 only under the revised thesis:
 
 ```text
 ACCS is not primarily a stronger constraint-adaptive policy optimizer.
-It is a deployment-time safety claim protocol that can wrap offline safe RL policies,
-including strong competitors, and issue calibrated action-level claims or abstain.
+It must be a selection-aware deployment auditor that can wrap offline safe RL policies,
+including strong competitors, and control or diagnose false certification among issued claims.
 ```

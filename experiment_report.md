@@ -11,15 +11,15 @@
 The current paper route is:
 
 ```text
-Safety Is a Claim, Not a Cost: Calibrated Action Certificates for Offline RL under Moving Constraints
+Calibration After Action Selection: Safety Claims for Offline RL under Moving Budgets
 ```
 
 Core thesis:
 
 ```text
-Aggregate safe RL performance is not deployment safety evidence.
-Deployment-time safety should be issued as calibrated, budget-conditioned,
-action-level claims with explicit provenance and abstention when evidence is insufficient.
+Learned safe-RL cost or feasibility scores are not calibrated deployment certificates.
+The main target is false certification among action claims issued after
+deployment-time action selection and moving budget queries.
 ```
 
 Evidence axes:
@@ -38,7 +38,7 @@ H = horizon-level risk audit
 | Phase | Role | Key result | Status |
 |---|---|---|---|
 | Phase 0 | Protocol freeze | train/calibration/test split, action-safety report schema | pending |
-| Phase 1 | Toy main phenomenon | deployability gap and ACCS vs global conformal | pending |
+| Phase 1 | Exact toy main phenomenon | marginal conformal failure after action selection | pending |
 | Phase 2 | ACCS prototype | group-wise coverage and abstention reports | pending |
 | Phase 3 | Safety-Gymnasium main | multi-budget, multi-seed benchmark | pending |
 | Phase 4 | DSRL | stronger offline safe RL benchmark | pending |
@@ -55,8 +55,8 @@ Conceptual claims currently supported by blueprint/theory only:
 
 | Claim | Evidence status |
 |---|---|
-| Aggregate fixed-budget safe RL does not logically imply deployable action claim support. | conceptual / needs Phase 1 |
-| Action-level conformal coverage requires group-conditional assumptions. | theorem draft / needs implementation |
+| Marginal conformal coverage does not imply selected-claim risk control. | conceptual / needs Phase 1 |
+| Residual-cost certificates are continuation-policy-specific. | theory draft / needs implementation |
 | Horizon-level safety is a separate boundary from action-level coverage. | theorem draft / needs audit |
 
 ---
@@ -102,3 +102,4 @@ analysis/paper_assets/*
 | 2026-06-23 | Phase 0 literature gate started. | `papers/paper_index.csv`, `papers/literature_review.md`, `analysis/literature_threat_map.md` | completed |
 | 2026-06-23 | Phase 0 critical PDFs downloaded. | `papers/pdfs/`, `papers/pdf_manifest.csv` | completed |
 | 2026-06-23 | Oral upgrade applied to project route. | `idea_blueprint.md`, `theory_proofs.md`, `analysis/claim_evidence_map.md`, `analysis/oral_upgrade_plan.md` | completed |
+| 2026-06-23 | External review incorporated. | SafeFQL added; route changed to calibration after action selection; old Proposition 2 removed. | completed |

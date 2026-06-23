@@ -1,14 +1,14 @@
-# AAAI_2 Oral Blueprint: Safety Is a Claim, Not a Cost
+# AAAI_2 Oral Blueprint: Calibration After Action Selection
 
 > **版本**：2026-06-23  
 > **目标会议**：AAAI 2027 / trustworthy RL / safe decision making  
-> **当前定位**：这不应写成“offline safe RL + conformal prediction”的自然组合，也不应写成“比 CAPS 更会适配 budget 的 policy”。升级后的唯一主线是 **deployment-time safety claim protocol**：安全不是 policy 的一个 scalar cost，而是部署时对某个 action 发行的、带校准证据来源的 claim；证据不足时必须 replace 或 abstain。
+> **当前定位**：这不应写成“offline safe RL + conformal prediction”的自然组合，也不应写成“比 CAPS 更会适配 budget 的 policy”。升级后的唯一主线是 **calibration after deployment-time action selection**：已有方法会用 learned cost / feasibility score 选择动作，但这些 score 在有限离线数据下经过 action selection 后可能把错误集中到真正执行的动作上。ACCS 必须成为 selection-aware finite-data auditor，而不是泛泛的 shield。
 
 ---
 
 ## 0A. Oral 级升级后的唯一主线
 
-Phase 0 文献调研已经确认：`CAPS`、`TREBI`、`AEGIS`、`BCRL` 已经覆盖了大量 “changing / real-time / any-budget safe offline RL” 空间。因此 AAAI_2 不能再把新颖性押在：
+Phase 0 文献调研已经确认：`CAPS`、`TREBI`、`AEGIS`、`BCRL`、`SafeFQL` 已经覆盖了大量 “changing / real-time / any-budget safe offline RL” 和 action-feasibility 空间。因此 AAAI_2 不能再把新颖性押在：
 
 ```text
 offline safe RL can adapt to new budgets without retraining
@@ -17,51 +17,51 @@ offline safe RL can adapt to new budgets without retraining
 升级后的主问题必须是：
 
 ```text
-Which proposed deployment actions have earned a statistically calibrated
-safety claim under the current constraint, and which must be rejected
-because the evidence is absent?
+After a deployment system selects an action from learned safe-RL scores,
+is the issued safety certificate still calibrated on the selected actions?
 ```
 
 论文灵魂从 “better shield” 升级为：
 
 ```text
-Safety is a claim, not a cost.
+A learned cost or feasibility estimate is not a calibrated deployment certificate.
 ```
 
 更精确地说：
 
 ```text
-Offline safe RL methods can optimize or switch policies across budgets,
-but they generally do not say which individual deployment-time actions are
-statistically justified under the requested safety constraint.
+Existing budget-adaptive offline safe-RL methods select actions by thresholding
+learned cost or feasibility scores. Under finite offline data, selection can
+concentrate score errors precisely among the actions that are executed.
 ```
 
 ACCS 的身份也随之升级：
 
 ```text
-ACCS is a budget-uniform action certificate protocol:
-it turns candidate policy actions into calibrated safety claims with provenance,
-or refuses to issue the claim through replacement / abstention.
+ACCS is a selection-aware action auditor:
+it controls or diagnoses false certification among issued action claims
+for a declared proposal stream, budget query rule, and continuation policy.
 ```
 
 这给本文一个区别于 CAPS/BCRL/AEGIS 的干净边界：
 
-| Existing line | What it optimizes | What it does not certify |
+| Existing line | What it already does | What remains open |
 |---|---|---|
-| CAPS | switches policies under varying constraints | which individual action has calibrated evidence |
-| BCRL | budget-conditioned reachability | provenance of each issued action claim |
-| AEGIS | feasible-budget diffusion policy | post-hoc claim validity for arbitrary candidate policies |
-| ACCS | action-level certificate surface | not a new optimal policy learner |
+| CAPS | action filtering and policy switching under varying constraints | finite-data calibration after selected-action filtering |
+| BCRL | budget-conditioned persistent safe sets | false certification control under finite samples and selected queries |
+| AEGIS | feasible-budget action/policy structure | post-selection calibration of learned feasibility scores |
+| SafeFQL | conformal calibration of a learned safety boundary | selected-action false-certification control under moving budgets/base scores |
+| ACCS | audits selected action claims | not a new feasible-action learner |
 
 ### Upgraded working title
 
 首选题目：
 
-> **Safety Is a Claim, Not a Cost: Calibrated Action Certificates for Offline RL under Moving Constraints**
+> **Calibration After Action Selection: Safety Claims for Offline RL under Moving Budgets**
 
 更稳的 AAAI 题目：
 
-> **Which Actions Are Safe Enough? Calibrated Action Certificates for Offline Safe Reinforcement Learning**
+> **A Cost Constraint Is Not a Certificate: Calibration After Action Selection in Offline RL**
 
 原题 `When Constraints Move` 可以作为 subtitle 或 intro hook，但不再是最强 headline。
 
@@ -83,25 +83,27 @@ under the deployment constraint.
 
 这张图要让 reviewer 立刻看到：aggregate cost success 与 deployable action claim support 是两件事。
 
-### New evaluation object: Deployability Gap
+### New evaluation object: selected-claim false certification
 
 新增核心指标：
 
 ```text
-Deployability Gap = policy-level budget success - action-level claim support
+False certification among issued claims =
+P[residual cost exceeds budget | certificate issued after action selection]
 ```
 
 可操作指标：
 
 | Metric | Meaning |
 |---|---|
-| Certified Utility Area | reward-vs-budget curve using only certified actions |
-| Claim Yield | fraction of candidate actions receiving a valid certificate |
-| Claim Miscoverage | empirical failure rate among accepted claims |
-| Evidence Abstention | fraction rejected due to insufficient calibration support |
-| Unsupported Safety Success | episodes that satisfy aggregate cost but contain uncertified actions |
+| False Certification Rate | failure rate among issued/selected action claims |
+| Claim Yield | fraction of a fixed proposal stream receiving a certificate |
+| Risk-Coverage Curve | utility/yield as the target false-certification risk changes |
+| Utility at Controlled Risk | task return while selected-claim risk is controlled |
+| Fallback Cost | reward/cost incurred when certification abstains |
+| Worst-Group False Certification | subgroup failure among issued claims |
 
-如果实验只证明 ACCS reward/cost 更好，论文还是 incremental。若实验证明强方法的 aggregate safety 仍可能有 deployability gap，而 ACCS 能发行 action-level claims 或诚实 abstain，论文才有 oral 味道。
+如果实验只证明 ACCS reward/cost 更好，论文还是 incremental。若实验证明普通 conformal / learned feasibility score 在 action selection 后 false certification 飙升，而 selection-aware ACCS 能把 issued-claim risk 拉回目标水平并保留足够 utility，论文才有 oral 味道。
 
 ## 0B. 从三个参考项目迁移过来的论文形态
 
@@ -142,19 +144,19 @@ Offline safe RL 通常在一个固定训练约束下学习并评测 policy，但
 
 推荐英文题目：
 
-> **Safety Is a Claim, Not a Cost: Calibrated Action Certificates for Offline RL under Moving Constraints**
+> **Calibration After Action Selection: Safety Claims for Offline RL under Moving Budgets**
 
 备用题目：
 
-> **Which Actions Are Safe Enough? Calibrated Action Certificates for Offline Safe Reinforcement Learning**
+> **A Cost Constraint Is Not a Certificate: Calibration After Action Selection in Offline RL**
 
 系统名：
 
-> **ACCS**：Action-Conditional Conformal Certificates / Action-Conditional Conformal Shielding
+> **ACCS**：Action-Selection-Aware Conformal Certification / Action-Conditional Conformal Selection
 
 中文标题：
 
-> **移动约束下的校准动作安全声明**
+> **动作选择后的安全校准**
 
 ---
 
@@ -327,54 +329,46 @@ U_c(s,a,alpha)
 A_cert(s,b,alpha) = {a : U_c(s,a,alpha) <= b}
 ```
 
-这使本文相对 CAPS/BCRL 的差异更清楚：
-
-- CAPS 学/切 policy 来适应 constraint；
-- BCRL 学 budget-conditioned reachability；
-- ACCS 学一张可以被任意后续 budget 查询的 action evidence surface。
-
-这也带来一个必须证明和实验验证的性质：
+这段现在只保留为实现接口，不作为主要理论贡献。真正的理论贡献必须处理：
 
 ```text
-Once U_c is calibrated, later budget selection does not require retraining
-and certified action sets are nested as the budget relaxes.
+selection can concentrate calibration failures among issued action claims.
 ```
 
 ---
 
-## 5. 主现象：Aggregate Safety Can Hide Unsupported Actions
+## 5. 主现象：Marginal Calibration Can Fail After Action Selection
 
 这篇需要一张像 `ICLR_1` Table 1 那样的主表。建议第一批 toy/Safety-Gym 结果就按下面形状设计。
 
-| Method | Aggregate budget pass? | Reward | Claim yield | Claim miscoverage | Unsupported safety success | Verdict |
-|---|---:|---:|---:|---:|---:|---|
-| no shield policy | yes/mixed | high | n/a | n/a | high | looks safe but has no action claims |
-| CAPS / policy switching | yes | high | n/a or low | n/a | nonzero | adapts policy, not claim provenance |
-| global conformal shield | yes | low | low | low | low | valid but over-conservative |
-| state-only conformal shield | mixed | medium | medium | uneven | medium | misses action heterogeneity |
-| **ACCS** | yes | high-medium | high | low by group | low | best certified utility |
-| CAPS + ACCS | yes | high | high | low by group | low | strong policy plus evidence layer |
-| ACCS-abstain | yes | lower | honest sparse | low | low | refuses unsupported claims |
+| Method | Proposal coverage | Issued false cert. | Claim yield | Reward | Verdict |
+|---|---:|---:|---:|---:|---|
+| uncalibrated score | poor | high | high | high | unsafe thresholding |
+| global CP | nominal | high after selection | high | high | marginally valid but selected-risk fails |
+| group CP | nominal by group | still high if selection concentrates errors | medium | medium | grouping helps but is not enough |
+| conformal risk control | target-dependent | lower | medium | medium | strong baseline |
+| selective/FCR baseline | controls issued risk | medium/low | medium | medium | statistical baseline |
+| **selection-aware ACCS** | nominal | near target | useful | high-medium | target method |
 
 这张表要支撑的结论：
 
-> When constraints move, the relevant question is not only whether aggregate episode cost is below budget, but which deployment actions have earned calibrated safety claims.
+> Marginal calibration over candidate actions does not imply calibrated claims for the actions selected and executed.
 
 ---
 
-## 6. 方法：ACCS as Calibrate-or-Abstain Action Safety
+## 6. 方法：ACCS as Selection-Aware Auditing
 
 ### 6.1 Pipeline overview
 
 ACCS 有五个模块：
 
 ```text
-offline dataset
-  -> cost-return model
-  -> action-conditional conformal calibration
-  -> hierarchical fallback / abstention
-  -> budget-conditioned action selection
-  -> rollout risk monitor
+proposal stream + declared continuation policy
+  -> cost / feasibility score
+  -> marginal calibration primitive
+  -> selection-aware risk control / FCR correction
+  -> issue certificate or abstain/fallback
+  -> rollout and horizon audit
 ```
 
 方法部分必须按“模块动机 -> 设计 -> 技术优势”写，而不是只列公式。
@@ -462,7 +456,7 @@ else:
     abstain
 ```
 
-每个 accepted action 输出一条 action-safety report：
+每个 issued claim 输出一条 action-safety report：
 
 ```json
 {
@@ -479,7 +473,7 @@ else:
 }
 ```
 
-这借鉴 `AAAI_1` 的 verifier-owned claim contract：模型给 prediction，calibrator 给 claim authority。
+这借鉴 `AAAI_1` 的 verifier-owned claim contract：模型给 prediction，auditor 决定 claim 是否能被发行。
 
 ### 6.5 Constraint-adaptive shield
 
@@ -568,24 +562,75 @@ P[Z_H(s,a) <= Q_c_hat(s,a) + q_g | G(s,a)=g] >= 1 - alpha
 
 Group-wise empirical coverage should be near or above `1-alpha`, while global conformal may over-cover low-risk groups and under-diagnose high-risk groups.
 
-### Proposition 2: Certified Action Implies Budget Violation Control
+### Proposition 2: Selection Can Concentrate Calibration Failures
 
 **Claim**  
-如果 action 被 shield 接受，即 `U_c(s,a) <= b`，则 action-level budget violation risk 被 calibration level 控制。
+普通 conformal upper bound 可以在所有 proposals 上 marginally valid，但经过部署时 action selection 后，false certification 会集中到真正执行/发行 claim 的动作上。
+
+**Forbidden old inference**
+
+```text
+P[Z <= U] >= 1-alpha  and  accept if U <= b
+does not imply
+P[Z > b | accept] <= alpha
+```
+
+只能推出：
+
+```text
+P[Z > b | accept] <= alpha / P[accept]
+```
+
+**Empirical prediction**
+
+Phase 1 exact toy 必须显示：global/group conformal 在 proposal distribution 上 coverage nominal，但选择 highest-reward certified action 后，issued-claim false certification 大幅超过 alpha；selection-aware ACCS 或 selective/FCR baseline 才能修复。
+
+### Proposition 3: Policy-Specific Residual-Cost Target
+
+**Claim**  
+Residual-cost certificate 必须声明 continuation policy。普通 offline trajectory 下的 `Z_H^beta` 不等于部署执行 policy 下的 `Z_H^{pi_cont}`。
 
 **Statement**
 
 ```text
-P[Z_H(s,a) > b | a in A_cert(s,b,alpha), G(s,a)=g] <= alpha
+Z_H^{beta}(s,a) != Z_H^{pi_cont}(s,a)
 ```
 
-under the same exchangeability assumptions and fixed decision rule.
+除非 calibration labels 来自 exact continuation policy、有效 off-policy conformal/OPE、可靠 model-based target，或目标降级为 one-step cost。
 
 **Empirical prediction**
 
-在 unseen budgets 上，ACCS 的 accepted actions 应保持低 violation rate；如果出现 coverage drift，应能在 group diagnostics 中定位。
+Phase 1/2 必须使用 simulator branching 或 exact toy ground truth 验证 policy-specific residual risk。
 
-### Proposition 3: Budget Monotonicity
+### Proposition 4: No-Overlap Impossibility
+
+**Claim**  
+如果 deployment query 落在 calibration distribution 无 support 的 state-action region，任何 distribution-free certifier 都不能发行 nontrivial valid safety claim；必须 abstain/fallback。
+
+**Empirical prediction**
+
+support stress test 中 claim yield 应下降、abstention 上升；若方法继续发行 claim，false certification 会升高。
+
+### Proposition 5: Selection-Aware False Certification Control
+
+**Claim target**  
+真正需要证明的是 issued claims 上的 false certification，而不是所有 proposals 上的 marginal coverage。
+
+**Target statement**
+
+```text
+P[Z_H^{pi_cont}(s,a) > b | certificate issued, group g, budget b] <= alpha
+```
+
+或 FCR 形式：
+
+```text
+E[# false issued claims / max(1, # issued claims)] <= alpha
+```
+
+under declared proposal distribution, selection rule, budget query rule, continuation policy, and support assumptions.
+
+### Proposition 6: Budget Monotonicity
 
 **Claim**  
 同一个 calibrated upper bound 可以支持多个 deployment budgets，且安全动作集合随 budget 单调扩张。
@@ -602,7 +647,7 @@ A_cert(s,b1,alpha) subseteq A_cert(s,b2,alpha)
 
 reward-cost frontier 应随 budget 平滑变化；adaptation latency 近似为 action filtering cost，而非 retraining cost。
 
-### Proposition 4: Calibration Granularity Tradeoff
+### Proposition 7: Calibration Granularity Tradeoff
 
 **Claim**  
 更细的 action groups 降低过保守性，但增加样本不足与 abstention 风险。
@@ -615,7 +660,7 @@ Fine groups reduce within-group score variance but increase quantile variance an
 
 group granularity sweep 应出现 Pareto：safe set size/reward improves up to a point, then coverage noise or abstention increases。
 
-### Proposition 5: Horizon-Level Boundary
+### Proposition 8: Horizon-Level Boundary
 
 **Claim**  
 Action-level conformal coverage alone does not solve policy-induced sequential distribution shift。
@@ -634,7 +679,7 @@ But if shield-induced policy shift changes the state distribution outside calibr
 
 distribution shift experiments should show where group coverage degrades; online recalibration or weighted conformal should mitigate but not magically eliminate the issue。
 
-### Proposition 6: Fixed-Budget Aggregate Safety Cannot Identify Claim Support
+### Supporting Observation A: Aggregate Safety Cannot Identify Claim Support
 
 **Claim**  
 仅报告固定 budget 下的 aggregate reward/cost，无法判断一个 policy 的 action-level safety claims 是否可发行。
@@ -645,50 +690,64 @@ Construct two policies or MDP instances with identical aggregate cost distributi
 
 **Empirical prediction**
 
-Toy deployability-gap construction should show two methods with similar episode cost but sharply different claim yield / unsupported safety success.
+Toy construction should show two methods with similar episode cost but sharply different selected-claim false certification and claim yield.
 
-### Proposition 7: Global Marginal Calibration Is Not Enough for Action Claims
+### Supporting Observation B: Global Marginal Calibration Is Not Enough After Selection
 
 **Claim**  
-全局 conformal threshold 可以 marginally valid，但不能替代 action-conditional claim provenance。
+全局 conformal threshold 可以 marginally valid，但可能在 selected claims 上失效或非常低效。
 
 **Statement**
 
-If action groups have different residual-cost distributions, a global threshold either over-covers low-risk groups and loses utility, or fails to provide group-specific evidence needed for action-level claims.
+If action groups and reward scores have heterogeneous residual-cost distributions, a global threshold can be valid before selection but inefficient or unsafe after selection. The paper should compare global CP, group CP, conformal risk control, and selection-aware ACCS.
 
 **Empirical prediction**
 
-Global conformal may look safe in aggregate while showing poor certified utility area and uninformative provenance compared with ACCS.
+Global conformal may look nominal over proposals while showing high false certification or poor utility/yield among issued claims.
 
 ---
 
 ## 8. 实验矩阵
 
-### E0: Deployability-Gap Toy Main Phenomenon
+### E0: Exact Selection-Failure Toy
 
-目的：快速造出 oral 级主现象，不只是 budget failure，而是 claim failure。
+目的：先在 exact finite MDP 中证明普通 conformal calibration 在 action selection 后会失效；如果这个现象打不穿，不要跑 Safety-Gym / DSRL。
 
 环境：
 
-- gridworld / navigation；
-- discrete actions；
-- obstacles and hazard costs；
-- train budget `b_train=10`；
-- test budgets `{3,5,8,10,15}`。
+- finite tabular MDP or one-state K-action construction；
+- exact residual-cost distribution known by enumeration / simulator branching；
+- candidate action set size `K in {2,4,8,16}`；
+- learned cost score with calibrated marginal residuals；
+- reward score correlated with calibration error；
+- fixed budget grid and declared continuation policy。
 
 必须画：
 
-1. two policies/methods with similar aggregate cost but different claim support；
-2. unsupported safety success vs certified utility；
-3. global conformal vs action-conditional certificates；
-4. action-safety provenance report examples；
-5. action-group coverage table。
+1. marginal coverage over all proposals is nominal；
+2. selected/issued-claim false certification is much higher than alpha；
+3. false certification increases with candidate set size `K`；
+4. global CP vs group CP vs conformal risk control vs selective/FCR baseline vs selection-aware ACCS；
+5. support stress: unsupported regions trigger abstention/fallback；
+6. utility at controlled false-certification risk。
 
 主张：
 
-> aggregate safety success does not imply deployable action-level claim support.
+> marginal calibration before selection does not imply calibrated safety claims after deployment-time action selection.
 
-### E1: Main Unseen-Budget Evaluation
+### E1: Policy-Specific Residual-Cost Validation
+
+目的：确认 `Z_H^{pi_cont}(s,a)` 的 label 确实对应声明的 continuation policy。
+
+必须做：
+
+1. declare proposal policy, selection rule, continuation policy, fallback, horizon；
+2. simulator branching from sampled state-action queries；
+3. many continuations per query to estimate true residual-budget violation；
+4. compare behavior-policy residual labels vs deployment-continuation residual labels；
+5. decide whether main experiments can use simulator branching, off-policy conformal/OPE, model-based target, or one-step target。
+
+### E2: Main Unseen-Budget Evaluation
 
 主 benchmark：
 
@@ -708,10 +767,10 @@ test on budgets: {3, 5, 8, 12, 15, 25}
 - normalized return；
 - total cost；
 - budget violation rate；
-- certified utility area；
+- utility at controlled false-certification risk；
 - claim yield；
-- claim miscoverage；
-- unsupported safety success；
+- false certification among issued claims；
+- risk-coverage curve；
 - certified action coverage；
 - abstention/fallback rate；
 - action replacement rate；
@@ -720,31 +779,31 @@ test on budgets: {3, 5, 8, 12, 15, 25}
 
 主张：
 
-> ACCS adapts to unseen budgets without retraining while maintaining calibrated accepted-action risk.
+> selection-aware ACCS maintains issued-claim false-certification control across moving budget queries while retaining useful reward/yield.
 
-### E2: Action-Conditional vs Global Conformal
+### E3: Selection-Aware vs Marginal Conformal
 
 比较：
 
-- global conformal shield；
-- state-only conformal shield；
-- action-only group shield；
-- state-action group ACCS；
-- ensemble pessimism；
-- no shield。
+- global split conformal；
+- group/Mondrian conformal；
+- conformal risk control；
+- CAP/selective conformal baseline；
+- selection-aware ACCS；
+- uncalibrated learned score。
 
 关键图：
 
 ```text
-x-axis: violation rate / coverage error
-y-axis: reward or safe action set size
+x-axis: false certification among issued claims
+y-axis: claim yield / reward
 ```
 
 主张：
 
-> action conditioning reduces unnecessary conservatism at matched violation control.
+> the contribution is selection-aware false-certification control, not merely finer action grouping.
 
-### E3: Calibration Diagnostics
+### E4: Calibration Diagnostics
 
 按 group 报告：
 
@@ -752,7 +811,7 @@ y-axis: reward or safe action set size
 - conformal radius；
 - empirical coverage；
 - mean cost；
-- accepted action fraction；
+- issued claim fraction；
 - reward loss。
 
 必须展示：
@@ -765,7 +824,7 @@ y-axis: reward or safe action set size
 
 > ACCS is not just a better aggregate metric; it gives auditable action-safety reports.
 
-### E4: Distribution Shift Stress Test
+### E5: Distribution Shift Stress Test
 
 改变：
 
@@ -787,7 +846,7 @@ y-axis: reward or safe action set size
 
 > sequential/distribution shift is a real boundary; ACCS can diagnose and partially mitigate it, but should not overclaim full guarantee.
 
-### E5: Calibrate-or-Abstain Boundary
+### E6: Calibrate-or-Abstain Boundary
 
 专门测试 evidence insufficiency：
 
@@ -807,7 +866,7 @@ y-axis: reward or safe action set size
 
 > abstention is necessary claim discipline, not a cosmetic add-on.
 
-### E6: Sequential Risk Allocation
+### E7: Sequential Risk Allocation
 
 设置：
 
@@ -827,7 +886,7 @@ y-axis: reward or safe action set size
 
 > action-level guarantees can be composed conservatively, but the horizon-level story must be audited empirically.
 
-### E7: Safety-Critical Case Study
+### E8: Safety-Critical Case Study
 
 推荐 driving / lane violation：
 
@@ -844,7 +903,7 @@ ACCS filters lane-risk actions and shifts to conservative alternatives
 - budget residual；
 - shield interventions。
 
-### E8: Ablations
+### E9: Ablations
 
 | Variant | 去掉什么 | 预期 |
 |---|---|---|
@@ -864,13 +923,17 @@ ACCS filters lane-risk actions and shifts to conservative alternatives
 
 | Baseline | 作用 |
 |---|---|
-| no-shield base policy | 证明原 policy 在 moving constraints 下不可靠 |
-| **CAPS** | 直接竞争者；证明 policy switching 不等于 action claim provenance |
-| **CAPS + ACCS** | 证明强 constraint-adaptive policy 仍需要 evidence layer |
-| global conformal over CAPS | 区分 policy switching 与 certificate granularity |
-| global conformal shield | 证明 conditionality 价值 |
-| state-conditional conformal shield | 区分 state vs action heterogeneity |
-| ensemble pessimism shield | 证明不是普通 uncertainty threshold |
+| uncalibrated learned score | 证明 score thresholding 会产生 false certification |
+| global split conformal | 证明 marginal coverage 不等于 selected-claim control |
+| group/Mondrian conformal | 区分 grouping vs selection correction |
+| conformal risk control | 风险控制强 baseline |
+| CAP/selective conformal baseline | post-selection/FCR 强 baseline |
+| selection-aware ACCS | 目标方法 |
+| **CAPS** | 直接竞争者；action filtering / policy switching prior |
+| CAPS + global CP | 区分 CAPS 与普通 conformal wrapping |
+| CAPS + group CP | 区分 grouping 与 selection-aware correction |
+| **CAPS + selection-aware ACCS** | 证明强 constraint-adaptive policy 仍需要 auditing layer |
+| **SafeFQL** | conformal offline safe RL 直接威胁 |
 | policy switching / conservative fallback | 对比 retrain-free adaptation |
 | CQL-Lagrangian / BCQ-Lagrangian / CPQ / COptiDICE 类 offline safe RL | 对齐领域基线 |
 | retrain-per-budget policy | expensive upper bound，不一定主 baseline |
@@ -893,13 +956,15 @@ ACCS filters lane-risk actions and shifts to conservative alternatives
 标题：
 
 > Aggregate safety can hide unsupported deployment actions.
+> Marginal calibration can fail after action selection.
 
 内容：
 
-- 两个方法 aggregate cost 都达标；
-- 一个方法的 action-level claim yield 很低，unsupported safety success 很高；
-- global shield 过保守；
-- ACCS 保持更高 certified utility area，并给出 provenance。
+- global/group conformal 在 proposals 上 nominal；
+- 选择最高 reward 的 certified action 后 false certification 飙升；
+- failure 随 candidate-set size `K` 增大；
+- selection-aware ACCS / selective baseline 控制 issued-claim false certification；
+- abstention 在 unsupported regions 上升。
 
 ### Figure 2: ACCS Pipeline
 
@@ -908,9 +973,9 @@ offline data -> cost critic -> action groups -> conformal upper bounds
              -> budget filter -> execute / replace / abstain
 ```
 
-### Figure 3: Certified Utility Frontier
+### Figure 3: Risk-Coverage Frontier
 
-`claim miscoverage / budget violation` vs `certified utility area / claim yield`。
+`false certification among issued claims` vs `claim yield / reward`。
 
 ### Figure 4: Group-Wise Calibration Heatmap
 
@@ -920,9 +985,9 @@ offline data -> cost critic -> action groups -> conformal upper bounds
 - empirical coverage；
 - accepted fraction。
 
-### Table 1: Deployability Gap Main Table
+### Table 1: Selection-Failure Main Table
 
-主现象表：no shield / CAPS / global / state-only / ACCS / CAPS+ACCS / ACCS-abstain。
+主现象表：uncalibrated score / global CP / group CP / CRC / selective CP / selection-aware ACCS。
 
 ### Table 2: Main Benchmark Results
 
@@ -944,9 +1009,10 @@ per-step coverage 和 episode violation 随 horizon 的变化。
 
 1. **Introduction**
    - aggregate reward/cost evaluation 的部署缺口；
-   - safety claim / provenance / deployability gap；
+   - learned feasibility score 与 calibrated deployment certificate 的区别；
+   - calibration after action selection；
    - `U/C/A/H` 证据轴；
-   - ACCS 的 budget-uniform action certificate protocol；
+   - ACCS 的 selection-aware audit protocol；
    - 主现象和贡献。
 
 2. **Problem Formulation**
@@ -957,9 +1023,10 @@ per-step coverage 和 episode violation 随 horizon 的变化。
 
 3. **Method: ACCS**
    - cost-return model；
-   - action-conditional conformal calibration；
-   - hierarchical fallback and abstention；
-   - budget-conditioned action selection；
+   - proposal stream and continuation policy；
+   - marginal calibration primitive；
+   - selection-aware false-certification control；
+   - fallback and abstention；
    - sequential risk monitor。
 
 4. **Theory**
@@ -971,10 +1038,10 @@ per-step coverage 和 episode violation 随 horizon 的变化。
    - horizon-level boundary。
 
 5. **Experiments**
-   - deployability-gap toy main phenomenon；
-   - Safety-Gymnasium / DSRL unseen budgets；
-   - certified utility frontier；
-   - CAPS vs CAPS+ACCS。
+   - exact selection-failure toy；
+   - policy-specific residual-cost validation；
+   - risk-coverage frontier；
+   - CAPS/SafeFQL comparisons after toy success。
 
 6. **Diagnostics and Ablations**
    - group-wise calibration；
@@ -993,7 +1060,7 @@ per-step coverage 和 episode violation 随 horizon 的变化。
 ## 12. 摘要骨架
 
 ```text
-Offline safe reinforcement learning is usually evaluated by aggregate reward and cost under a fixed constraint budget, but deployed policies must justify individual actions under safety requirements that can change after training. We argue that safety is a claim, not a scalar cost: an action should be executed only when its residual safety cost is supported by calibrated evidence under the requested deployment constraint. This exposes a deployability gap in existing evaluation, where a policy can satisfy aggregate episode cost while relying on actions whose safety claims are unsupported. We introduce ACCS, an action-conditional conformal certificate protocol that builds a budget-uniform upper-cost surface for candidate actions, issues action-level safety claims with explicit calibration provenance, and replaces or abstains when evidence is insufficient. Under group-conditional exchangeability, accepted action claims satisfy finite-sample miscoverage control; under post-hoc budget queries, the same calibrated certificate surface yields nested certified action sets without retraining. Experiments should evaluate not only reward and violation, but certified utility area, claim yield, claim miscoverage, unsupported safety success, abstention, and horizon-level risk. The intended empirical thesis is that even strong constraint-adaptive policies benefit from an explicit deployment evidence layer.
+Offline safe reinforcement learning methods often select deployment actions by thresholding learned cost or feasibility scores. Even when these scores admit marginal conformal calibration over candidate proposals, deployment-time action selection can concentrate calibration errors among the actions that are actually certified and executed. We study this calibration-after-selection problem for offline safe RL under moving budget queries. The intended contribution is not another constraint-adaptive policy optimizer, but a selection-aware auditor that targets false certification among issued action claims for a declared proposal stream, continuation policy, and support condition. The first required evidence is an exact counterexample showing that ordinary global or group conformal calibration can remain nominal over proposals while failing after action selection.
 ```
 
 ---
@@ -1006,17 +1073,17 @@ Offline safe reinforcement learning is usually evaluated by aggregate reward and
 
 2. **Failure of default assumption**
    - deployment budgets move；
-   - aggregate cost success does not imply action-level claim support；
-   - reward-cost metrics merge utility, calibration, and provenance。
+   - learned feasibility scores are not calibrated deployment certificates；
+   - action selection can concentrate calibration failures。
 
 3. **Evidence-axis split**
    - introduce `U/C/A/H`；
-   - add deployability gap and claim yield。
+   - add false certification among issued claims and claim yield。
 
 4. **Method**
-   - ACCS as budget-uniform action certificate protocol；
-   - action-conditioned conformal upper bounds；
-   - execute / replace / abstain with provenance。
+   - ACCS as selection-aware auditor；
+   - declared proposal stream / continuation policy / fallback；
+   - false-certification control or diagnosis among issued claims。
 
 5. **Evidence**
    - main phenomenon table；
@@ -1041,46 +1108,49 @@ Offline safe reinforcement learning is usually evaluated by aggregate reward and
 - 定义 action-safety report JSON。
 - 写 `experiment_report.md` 和 `claim_evidence_map.md`。
 
-### Phase 1: Deployability-gap toy main phenomenon
+### Phase 1: Exact selection-failure toy
 
 目标：一周内出 Figure 1 / Table 1 雏形。
 
-- gridworld；
-- aggregate budget pass vs action-claim support；
-- no shield / CAPS-like switching proxy / global / ACCS；
-- certified utility area；
-- claim yield and unsupported safety success；
-- group-wise coverage and provenance examples。
+- finite MDP or one-state K-action construction；
+- exact residual-cost distribution under declared continuation policy；
+- global CP / group CP nominal over proposals；
+- selected-action false certification after highest-reward certified action；
+- uncalibrated score / global CP / group CP / conformal risk control / selective baseline / selection-aware ACCS；
+- claim yield, false certification, risk-coverage, reward, fallback。
 
 Go 标准：
 
-- at least one method satisfies aggregate cost while having low claim yield；
-- global shield reward/certified utility 明显下降；
-- ACCS 在相同 claim miscoverage 下 certified utility 更高；
-- CAPS-like switching proxy 与 CAPS+ACCS 的差异可解释；
-- group coverage 和 action provenance 可解释。
+- global/group CP over proposals has nominal coverage；
+- selected-action false certification 明显超过 alpha；
+- failure 随 candidate-set size `K` 增大；
+- selection-aware ACCS 或 selective/FCR baseline 修复 false certification；
+- in-support claim yield 不塌。
 
 ### Phase 2: ACCS prototype
 
 - cost-return ensemble；
-- action grouping；
-- conformal quantile；
-- hierarchical fallback；
-- action selection；
-- report logging。
+- proposal stream interface；
+- declared continuation policy and fallback interface；
+- global CP / group CP / CRC / selective-FCR baselines；
+- selection-aware false-certification control；
+- support diagnostics and abstention；
+- issued-claim report logging。
 
 ### Phase 3: Safety-Gymnasium main
 
+- only after Phase 1/2 pass；
 - 2-3 个环境；
 - 5 个 budgets；
 - 5 seeds；
-- baselines：no shield/global/state-only/pessimism/CAPS if feasible。
+- baselines：global CP/group CP/CRC/selective baseline/CAPS/SafeFQL if feasible。
 
 ### Phase 4: DSRL and stronger baselines
 
 - 接 DSRL；
 - CQL-Lagrangian/CPQ/COptiDICE 类 baseline；
-- CAPS / CAPS+ACCS；
+- CAPS / CAPS+global CP / CAPS+group CP / CAPS+selection-aware ACCS；
+- SafeFQL；
 - retrain-per-budget optional upper bound。
 
 ### Phase 5: Distribution shift and horizon audit
@@ -1103,17 +1173,15 @@ Go 标准：
 
 | Claim | Required evidence | Status |
 |---|---|---|
-| Aggregate fixed-budget safety is not deployment safety evidence. | Toy deployability-gap table showing aggregate pass but low claim support. | pending |
-| Safety should be issued as action-level claims with calibration provenance. | Formal claim tuple + action-safety report schema + theorem. | pending |
-| ACCS builds a budget-uniform certificate surface. | Theorem + unseen-budget thresholding experiments. | pending |
-| Strong constraint-adaptive policies still need an evidence layer. | CAPS vs CAPS+ACCS claim-yield/miscoverage comparison. | pending |
-| Action-conditioned calibration is less conservative than global conformal. | Matched violation / coverage frontier and safe action set size. | pending |
-| ACCS controls accepted action-level violation risk. | Theorem + empirical group-wise coverage. | pending |
-| ACCS adapts to unseen budgets without retraining. | Same calibrated certificate surface evaluated across unseen budgets; adaptation latency. | pending |
-| Abstention is necessary under sparse/OOD action evidence. | Sparse group stress test + abstention reason breakdown. | pending |
+| Learned feasibility scores are not calibrated deployment certificates. | Exact toy showing nominal proposal coverage but selected-claim failure. | pending |
+| Marginal conformal does not control issued-claim risk after selection. | Global/group CP accepted-set counterexample. | pending |
+| ACCS targets false certification among issued claims. | Selection-aware theorem or CRC/FCR-style guarantee + toy evidence. | pending |
+| Residual-cost certificates are policy-specific. | Formal `Z_H^{pi_cont}` + simulator branching / exact labels. | pending |
+| No support implies abstention is necessary. | No-overlap theorem + support stress test. | pending |
+| Strong constraint-adaptive methods still need finite-data auditing. | CAPS vs CAPS+global/group/selective ACCS comparison. | pending |
+| SafeFQL is prior work but not the full selection-aware moving-budget story. | Full SafeFQL comparison or precise limitation. | pending |
 | Horizon-level safety is a separate empirical boundary. | Risk allocation theorem + episode violation audit under shift. | pending |
-| Distribution shift can degrade coverage but is diagnosable. | shift experiments with group coverage degradation and recalibration. | pending |
-| ACCS is not merely ensemble pessimism. | Baseline comparison against uncertainty/pessimism shields. | pending |
+| Distribution shift can degrade coverage but is diagnosable. | shift experiments with false certification and support diagnostics. | pending |
 
 ---
 
@@ -1121,11 +1189,14 @@ Go 标准：
 
 | 质疑 | 预防 |
 |---|---|
-| 这只是 conformal prediction + safe RL。 | 主线写成 moving constraints 下的 action-safety claim protocol；主现象表证明 fixed-budget evaluation 缺口。 |
+| 这只是 conformal prediction + safe RL。 | 主线写成 calibration after action selection；普通 conformal 是会失败的 baseline。 |
+| SafeFQL 已经做了。 | 承认 SafeFQL；只 claim selection-aware false certification under candidate/budget queries。 |
+| accepted-action theorem 错。 | 删除旧 Proposition 2；只证明/实验 false certification among issued claims。 |
+| residual-cost target 不可观测。 | 显式定义 `Z_H^{pi_cont}`；先做 exact toy / simulator branching。 |
 | action-level guarantee 对 RL horizon 没用。 | 明确理论边界；horizon-level 用 risk allocation + empirical audit，不夸大。 |
 | action groups 是拍脑袋。 | group granularity sweep + state/action/global baselines + sample-size fallback。 |
 | coverage 假设不成立。 | 把 exchangeability 写清楚；做 distribution shift stress 和 weighted/online variants。 |
-| reward 下降太多。 | 报 certified utility frontier、claim yield、安全动作集合大小、global conformal 对比。 |
+| reward 下降太多。 | 报 risk-coverage frontier、claim yield、fallback cost、global/group/selective baselines。 |
 | abstention 让任务不可用。 | 报 abstention reason、fallback performance、utility cost，并把它定位为 claim discipline。 |
 | baseline 不够强。 | 加 offline safe RL baselines、policy switching、pessimism、global/state conformal、retrain upper bound。 |
 | calibration/test 泄漏。 | protocol freeze；train/calibration/test split；所有 group 规则在 calibration 前固定。 |
@@ -1181,7 +1252,7 @@ Go 标准：
 - action-conditional conformal shield；
 - group-wise coverage；
 - retrain-free adaptation；
-- certified utility frontier；
+- risk-coverage frontier；
 - horizon-level empirical audit。
 
 避免：
