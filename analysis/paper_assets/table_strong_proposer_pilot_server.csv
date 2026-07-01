@@ -1,0 +1,8 @@
+name,selected_false_certification,claim_yield,normalized_reward,fallback_rate,support_rejection_rate,episode_violation_rate
+none_original_proposer,0.15988,1.0,0.9974296041590062,0.0,0.0,0.15988
+global_candidate_cp,0.15172,1.0,0.9971807964779298,0.0,0.02988,0.15172
+reward_bin_ucb_20,0.0012,1.0,0.9312330128581244,0.0,0.9966,0.0012
+rank_bin_ucb,0.02092,1.0,0.936366466183016,0.0,1.0,0.02092
+crc_style_safety_threshold,0.0,0.0,0.9198984236884172,1.0,0.99864,0.00052
+accs_v0_support_safety,0.00208,1.0,0.9321611779709287,0.0,0.99648,0.00208
+oracle_residual_label,0.0,1.0,0.9947834283236998,0.0,0.15988,0.0

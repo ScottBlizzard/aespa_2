@@ -1,0 +1,19 @@
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{llcrrrrrr}
+\toprule
+Role & Proposer & $q$ & Cand. F & Top F & Glob. R/Y & R-bin R/Y & CRC R/Y & ACCS R/Y \\
+\midrule
+mainline & CAPSIQL 50k & 0.93 & $4.42{\pm}0.43$ & $5.68{\pm}0.25$ & 0.09 / 3.81 & 3.59 / 71.71 & 2.67 / 83.52 & 2.28 / 80.60 \\
+high-signal & CPQ 10k & 0.92 & $6.40{\pm}0.68$ & $7.17{\pm}0.67$ & 0.08 / 7.33 & 1.99 / 60.96 & 2.78 / 83.44 & 2.25 / 80.18 \\
+stress & COptiDICE 10k & 0.92 & $6.36{\pm}0.57$ & $8.30{\pm}0.76$ & 0.13 / 8.08 & 3.12 / 57.94 & 2.28 / 79.15 & 2.17 / 78.33 \\
+\midrule
+stability & CPQ 10k & 0.93 & $4.13{\pm}0.49$ & $4.60{\pm}0.51$ & 0.05 / 7.33 & 1.88 / 73.48 & 2.82 / 91.97 & 2.42 / 89.49 \\
+stability & COptiDICE 10k & 0.93 & $4.16{\pm}0.45$ & $5.86{\pm}0.29$ & 0.03 / 8.08 & 3.10 / 70.88 & 2.69 / 86.07 & 2.20 / 83.12 \\
+\bottomrule
+\end{tabular}
+\caption{Direct OSRL trained-proposer audit on official DSRL \texttt{OfflineCarCircle-v0}. All auditors are evaluated on the same frozen query banks. Values are mean percentages over three seeds; parentheses show standard deviation for candidate false rate (Cand. F) and unaudited top-selected false certification (Top F). R/Y columns report selected false certification / claim yield.}
+\label{tab:direct-osrl-main}
+\end{table*}

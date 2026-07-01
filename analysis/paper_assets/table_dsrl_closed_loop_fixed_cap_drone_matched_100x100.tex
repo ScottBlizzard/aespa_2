@@ -1,0 +1,20 @@
+\begin{table}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llrrrr}
+\toprule
+Proposer & Cap & Audit K/N & Audit U95 & Test K/N & Test U95 \\
+\midrule
+CPQ & 1 & 45/300 & 18.82 & 46/300 & 19.18 \\
+CPQ & 4 & 45/300 & 18.82 & 46/300 & 19.18 \\
+CPQ & 8 & 45/300 & 18.82 & 46/300 & 19.18 \\
+\midrule
+COpt. & 1 & 289/300 & 97.93 & 294/300 & 99.13 \\
+COpt. & 4 & 289/300 & 97.93 & 294/300 & 99.13 \\
+COpt. & 8 & 289/300 & 97.93 & 294/300 & 99.13 \\
+\bottomrule
+\end{tabular}
+\caption{Diagnostic first-cap closed-loop audit on \texttt{OfflineDroneCircle-v0}. K/N is the number of false issued episodes among issued episodes over three 100/100 audit/test seeds; U95 is the one-sided exact binomial 95\% upper bound, in percent. DroneCircle is a boundary diagnostic: COptiDICE is nearly always unsafe online, while CPQ also has nontrivial residual episode risk.}
+\label{tab:first-cap-closed-loop-drone}
+\end{table}

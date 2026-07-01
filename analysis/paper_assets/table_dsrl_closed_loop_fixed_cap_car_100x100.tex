@@ -1,0 +1,20 @@
+\begin{table}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llrrrr}
+\toprule
+Proposer & Cap & Audit K/N & Audit U95 & Test K/N & Test U95 \\
+\midrule
+CPQ & 1 & 1/300 & 1.57 & 5/300 & 3.47 \\
+CPQ & 4 & 1/300 & 1.57 & 5/300 & 3.47 \\
+CPQ & 8 & 1/300 & 1.57 & 5/300 & 3.47 \\
+\midrule
+COpt. & 1 & 169/300 & 61.15 & 188/300 & 67.32 \\
+COpt. & 4 & 169/300 & 61.15 & 188/300 & 67.32 \\
+COpt. & 8 & 169/300 & 61.15 & 188/300 & 67.32 \\
+\bottomrule
+\end{tabular}
+\caption{Pre-registered first-cap closed-loop audit on \texttt{OfflineCarCircle-v0}. K/N is the number of false issued episodes among issued episodes over three 100/100 audit/test seeds; U95 is the one-sided exact binomial 95\% upper bound, in percent.}
+\label{tab:first-cap-closed-loop}
+\end{table}

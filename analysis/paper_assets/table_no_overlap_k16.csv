@@ -1,0 +1,4 @@
+world,method,selected_false_certification,claim_yield,mean_reward,interpretation
+M0_safe_unsupported,naive_certify_unsupported,0.000000,1.000000,0.941092,"unsupported region happens to be safe"
+M1_unsafe_unsupported,naive_certify_unsupported,0.814225,1.000000,0.941092,"same offline support but unsupported region is unsafe"
+M1_unsafe_unsupported,support_aware_abstain_above_support,0.000000,1.000000,0.841366,"support-aware cap avoids unsupported failures"

@@ -1,0 +1,329 @@
+\documentclass[letterpaper]{article}
+\usepackage[submission]{aaai2027}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage[hyphens]{url}
+\urlstyle{rm}
+\def\UrlFont{\rm}
+\frenchspacing
+\setlength{\pdfpagewidth}{8.5in}
+\setlength{\pdfpageheight}{11in}
+
+\setcounter{secnumdepth}{0}
+
+\title{Supplementary Material: A Safety Score Is Not a Certificate}
+
+\author{
+    Anonymous Submission
+}
+\affiliations{
+    Paper ID withheld for double-blind review.
+}
+
+\begin{document}
+\maketitle
+\enlargethispage{1\baselineskip}
+
+\section{Supplementary Evidence Map}
+
+The main paper promotes only the shortest evidence path: direct trained-proposer
+CarCircle action audits, logged episode accumulation, and pre-registered
+fixed-cap closed-loop audits. This supplement records the completed supporting
+experiments that do not fit in the seven-page body. All rows use frozen query
+blocks or pre-registered online audit traces; per-seed CSV files are kept in
+\texttt{analysis/paper\_assets/}.
+
+\section{Residual-Horizon Stress}
+
+Table~\ref{tab:app-horizon} changes the logged suffix horizon used to define the
+residual-cost label on the same CPQ/COptiDICE CarCircle q0.92 protocol. The
+pattern survives both shorter and longer residual labels: top-selected risk
+remains nontrivial, and ACCS stays below the 5\% target with useful yield.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llrrrrrr}
+\toprule
+Proposer & H & Cand. F & Top F & Global R/Y & R-bin R/Y & CRC R/Y & ACCS R/Y \\
+\midrule
+COptiDICE & 20 & 6.60 & 7.35 & 0.04/13.69 & 4.01/59.29 & 2.53/93.83 & 2.13/93.00 \\
+COptiDICE & 80 & 5.63 & 6.39 & 5.65/97.94 & 5.07/95.24 & 3.83/90.21 & 3.27/84.93 \\
+CPQ & 20 & 5.88 & 6.24 & 0.25/8.38 & 0.89/67.26 & 2.57/95.26 & 2.26/94.82 \\
+CPQ & 80 & 6.32 & 7.04 & 4.11/90.48 & 1.91/61.03 & 3.92/86.63 & 3.61/80.13 \\
+\bottomrule
+\end{tabular}
+\caption{Residual-horizon stress on official DSRL CarCircle q0.92, averaged
+over three seeds. Values are percentages. R/Y reports issued false
+certification / claim yield.}
+\label{tab:app-horizon}
+\end{table*}
+
+\section{Logged Episode Proxy and Emission Caps}
+
+Table~\ref{tab:app-episode-caps} groups fixed action-level query blocks by
+logged episode. Without an emission cap, small action-level error rates can
+accumulate into many false issued episodes. Capping the number of certificates
+per logged episode gives an explicit risk-yield curve.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llrrr}
+\toprule
+Proposer & Rule & Block R/Y & Episode R/Y & Mean issued blocks \\
+\midrule
+CPQ & ACCS & 2.25/80.18 & 49.08/100.00 & 33.18 \\
+CPQ & ACCS + cap1 & 0.46/2.42 & 0.46/100.00 & 1.00 \\
+CPQ & ACCS + cap2 & 0.57/4.83 & 1.03/100.00 & 2.00 \\
+CPQ & ACCS + cap4 & 0.80/9.67 & 2.53/100.00 & 4.00 \\
+CPQ & ACCS + cap8 & 1.55/19.33 & 10.57/100.00 & 8.00 \\
+\midrule
+COptiDICE & ACCS & 2.17/78.33 & 44.37/100.00 & 32.41 \\
+COptiDICE & ACCS + cap1 & 0.69/2.42 & 0.69/100.00 & 1.00 \\
+COptiDICE & ACCS + cap2 & 0.52/4.83 & 1.03/100.00 & 2.00 \\
+COptiDICE & ACCS + cap4 & 0.72/9.67 & 2.64/100.00 & 4.00 \\
+COptiDICE & ACCS + cap8 & 1.45/19.33 & 9.54/100.00 & 8.00 \\
+\bottomrule
+\end{tabular}
+\caption{Logged episode-block proxy for CPQ/COptiDICE q0.92 on CarCircle.
+Block R/Y is action-level false issued certification / block yield. Episode R/Y
+is whether any issued block in a logged episode is false / episode issue rate.}
+\label{tab:app-episode-caps}
+\end{table*}
+
+\section{Closed-Loop Audit Details}
+
+Tables~\ref{tab:app-closed-loop} and~\ref{tab:app-closed-loop-drone} give the
+audit and test splits behind the main-text closed-loop table. The rule family
+is fixed before labels are observed: issue only the first $m$ certificates in
+each online episode for $m\in\{64,128,256,512\}$. The exact one-sided
+binomial upper bound is reported over issued episodes.
+
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lllrrrrr}
+\toprule
+Environment & Proposer & Cap & Audit K/N & Audit U95 & Test K/N & Test U95 & Issued/ep \\
+\midrule
+CarCircle & CPQ & 64 & 11/600 & 3.02 & 12/600 & 3.22 & 64.00 \\
+CarCircle & CPQ & 128 & 11/600 & 3.02 & 12/600 & 3.22 & 128.00 \\
+CarCircle & CPQ & 256 & 11/600 & 3.02 & 12/600 & 3.22 & 256.00 \\
+CarCircle & CPQ & 512 & 11/600 & 3.02 & 12/600 & 3.22 & 300.00 \\
+CarCircle & COptiDICE & 64 & 370/600 & 64.97 & 365/600 & 64.15 & 64.00 \\
+CarCircle & COptiDICE & 128 & 370/600 & 64.97 & 365/600 & 64.15 & 128.00 \\
+CarCircle & COptiDICE & 256 & 370/600 & 64.97 & 365/600 & 64.15 & 256.00 \\
+CarCircle & COptiDICE & 512 & 370/600 & 64.97 & 365/600 & 64.15 & 300.00 \\
+\midrule
+BallCircle & CPQ & 64 & 0/600 & 0.50 & 0/600 & 0.50 & 64.00 \\
+BallCircle & CPQ & 128 & 0/600 & 0.50 & 0/600 & 0.50 & 128.00 \\
+BallCircle & CPQ & 256 & 0/600 & 0.50 & 0/600 & 0.50 & 200.00 \\
+BallCircle & CPQ & 512 & 0/600 & 0.50 & 0/600 & 0.50 & 200.00 \\
+BallCircle & COptiDICE & 64 & 533/600 & 90.89 & 533/600 & 90.89 & 64.00 \\
+BallCircle & COptiDICE & 128 & 533/600 & 90.89 & 533/600 & 90.89 & 128.00 \\
+BallCircle & COptiDICE & 256 & 533/600 & 90.89 & 533/600 & 90.89 & 200.00 \\
+BallCircle & COptiDICE & 512 & 533/600 & 90.89 & 533/600 & 90.89 & 200.00 \\
+\bottomrule
+\end{tabular}
+\caption{Pre-registered fixed-cap saturation audit for the positive
+CarCircle and BallCircle rows over three 200/200 audit/test seeds per
+environment-proposer pair. U95 is the exact one-sided 95\% binomial upper
+bound, in percent. Issued/ep is the mean number of issued certificates per
+online episode; cap512 saturates CarCircle at 300 steps and BallCircle at 200
+steps.}
+\label{tab:app-closed-loop}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lllrrrrr}
+\toprule
+Environment & Proposer & Cap & Audit K/N & Audit U95 & Test K/N & Test U95 & Issued/ep \\
+\midrule
+DroneCircle & CPQ & 64 & 87/600 & 17.08 & 90/600 & 17.61 & 37.01 \\
+DroneCircle & CPQ & 128 & 87/600 & 17.08 & 90/600 & 17.61 & 43.52 \\
+DroneCircle & CPQ & 256 & 87/600 & 17.08 & 90/600 & 17.61 & 48.12 \\
+DroneCircle & CPQ & 512 & 87/600 & 17.08 & 90/600 & 17.61 & 49.52 \\
+DroneCircle & COptiDICE & 64 & 587/600 & 98.71 & 576/600 & 97.23 & 63.91 \\
+DroneCircle & COptiDICE & 128 & 587/600 & 98.71 & 576/600 & 97.23 & 126.53 \\
+DroneCircle & COptiDICE & 256 & 587/600 & 98.71 & 576/600 & 97.23 & 236.51 \\
+DroneCircle & COptiDICE & 512 & 587/600 & 98.71 & 576/600 & 97.23 & 271.91 \\
+\bottomrule
+\end{tabular}
+\caption{DroneCircle fixed-cap saturation audit. The shorter issued/ep values
+for CPQ reflect episodes with far fewer certifiable steps than the nominal cap;
+the episode-level K/N and exact U95 remain computed over the same three
+200/200 audit/test seeds.}
+\label{tab:app-closed-loop-drone}
+\end{table*}
+
+\section{Tune/Audit/Test Closed-Loop Diagnostics}
+
+Table~\ref{tab:app-tuned-rules} records the higher-upside attempt to select a
+small closed-loop rule family on tune episodes and then freeze the selected
+rule before audit and test reporting. The broad tuned run reduces CPQ
+DroneCircle risk relative to the fixed-cap full rule, but does not reach the
+5\% target. The focused Drone-only follow-ups either issue too few certificates
+or remain above target. We therefore keep the fixed-cap CarCircle/BallCircle
+rows as the main positive closed-loop evidence and treat DroneCircle as a hard
+boundary case.
+
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lllrrrrr}
+\toprule
+Run & Env. & Proposer & Tune K/N & Audit K/N & Audit U95 & Test K/N & Test U95 \\
+\midrule
+Broad 100/200/200 & Car & CPQ & 3/300 & 4/600 & 1.52 & 10/600 & 2.81 \\
+Broad 100/200/200 & Ball & CPQ & 0/300 & 0/600 & 0.50 & 0/600 & 0.50 \\
+Broad 100/200/200 & Drone & CPQ & 16/197 & 31/397 & 10.39 & 32/395 & 10.73 \\
+Broad 100/200/200 & Drone & COpt. & 222/230 & 461/472 & 98.69 & 437/455 & 97.43 \\
+\midrule
+Conservative 200/300/300 & Drone & CPQ & 0/4 & 4/5 & 98.98 & 1/4 & 75.14 \\
+Conservative 200/300/300 & Drone & COpt. & 119/127 & 173/186 & 95.82 & 153/164 & 96.19 \\
+Medium 200/300/300 & Drone & CPQ & 22/388 & 32/581 & 7.33 & 54/581 & 11.52 \\
+Medium 200/300/300 & Drone & COpt. & 242/253 & 402/420 & 97.21 & 366/377 & 98.36 \\
+\bottomrule
+\end{tabular}
+\caption{Tune/audit/test selected-rule diagnostics. Tune chooses from a small
+predeclared rule family; audit/test evaluate the frozen selected rule. U95 is
+the one-sided 95\% binomial upper bound over issued episodes, in percent. These
+diagnostics are appendix evidence, not a replacement for the fixed-cap main
+table.}
+\label{tab:app-tuned-rules}
+\end{table*}
+
+\section{Broader Environment Action-Level Checks}
+
+Table~\ref{tab:app-ball-drone} records the one-seed BallCircle/DroneCircle
+action-level feasibility pass. These rows support portability of the fixed
+query-bank pipeline but are not stronger headline rows than CarCircle. The
+follow-up three-seed COptiDICE BallCircle row in
+Table~\ref{tab:app-copt-ball} is more stable, but it is a robustness result
+rather than a selection-amplification stress row.
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llrrrrrr}
+\toprule
+Proposer & Env. & Cand. F & Top F & Global R/Y & R-bin R/Y & CRC R/Y & ACCS R/Y \\
+\midrule
+CPQ & Ball & 6.35 & 5.95 & 1.72/82.56 & 1.11/49.51 & 2.52/90.23 & 1.88/85.94 \\
+CPQ & Drone & 2.35 & 3.04 & 3.01/99.83 & 2.82/95.88 & 2.93/99.97 & 2.12/88.71 \\
+COptiDICE & Ball & 6.15 & 6.53 & 5.33/96.12 & 5.27/60.37 & 3.57/87.64 & 2.94/80.46 \\
+COptiDICE & Drone & 2.27 & 3.19 & 3.21/100.00 & 2.98/100.00 & 3.21/100.00 & 2.84/98.18 \\
+\bottomrule
+\end{tabular}
+\caption{Single-seed trained-checkpoint action-level feasibility on official
+DSRL BallCircle and DroneCircle, q0.92. Values are percentages.}
+\label{tab:app-ball-drone}
+\end{table*}
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrr}
+\toprule
+Metric & Mean & Std \\
+\midrule
+Candidate false & 5.15 & 1.42 \\
+Top false & 4.85 & 1.59 \\
+Global risk & 4.03 & 1.26 \\
+Global yield & 97.36 & 1.00 \\
+CRC risk & 2.82 & 0.54 \\
+CRC yield & 91.73 & 4.87 \\
+ACCS risk & 2.48 & 0.33 \\
+ACCS yield & 88.61 & 7.19 \\
+\bottomrule
+\end{tabular}
+\caption{Three-seed COptiDICE BallCircle q0.92 action-level follow-up. Values
+are percentages.}
+\label{tab:app-copt-ball}
+\end{table}
+
+\clearpage
+\section{Off-Policy Query-Shift Diagnostic}
+
+Table~\ref{tab:app-offpolicy-shift} gives a local diagnostic for the
+off-policy audit route. The audit law is uniform over a selected-query score,
+while the deployment law tilts toward high-reward, high-risk queries with
+density proportional to $x^{a-1}$. Unweighted auditing estimates the wrong
+query law; known-ratio weighting and a hard support cap expose the risk-yield
+and effective-sample-size cost.
+
+\begin{table}[!ht]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llrrr}
+\toprule
+Shift & Method & $\tau$ & Test R/Y & Audit ESS \\
+\midrule
+4 & Unweighted $P$ & 0.895 & 18.65/64.12 & 17910 \\
+4 & Weighted $Q/P$ & 0.860 & 4.59/54.67 & 7426 \\
+4 & Support cap & 0.850 & 0.00/52.16 & 17038 \\
+4 & Oracle $Q$ & 0.860 & 4.59/54.67 & 109340 \\
+\midrule
+8 & Unweighted $P$ & 0.895 & 33.90/41.19 & 17910 \\
+8 & Weighted $Q/P$ & 0.855 & 4.45/28.49 & 3902 \\
+8 & Support cap & 0.850 & 0.00/27.23 & 17038 \\
+8 & Oracle $Q$ & 0.855 & 4.45/28.49 & 56987 \\
+\bottomrule
+\end{tabular}
+\caption{Off-policy query-shift toy. Test R/Y is deployment false
+certification / claim yield in percent. The unweighted audit is valid for the
+audit law $P$ but fails under shifted deployment law $Q$; weighting tracks the
+oracle at the cost of smaller effective sample size, while support capping is
+conservative.}
+\label{tab:app-offpolicy-shift}
+\end{table}
+
+\section{Diagnostics and Negative Evidence}
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{p{0.24\textwidth}p{0.36\textwidth}p{0.28\textwidth}}
+\toprule
+Diagnostic & Finding & Use in the paper \\
+\midrule
+Exact selection toy & K=16 raises top-selected false certification to 47.91\%,
+while CRC-style and ACCS-v0 repair the toy at about 3.22\%. & Phenomenon check,
+not the main empirical claim. \\
+Policy mismatch & Behavior-continuation residual labels can accept actions
+that fail under deployment continuation. & Motivates declaring $Z_j$ and
+separating logged suffix labels from closed-loop labels. \\
+No-overlap diagnostic & Unsupported high-reward regions cannot be certified by
+distribution-free offline calibration alone. & Motivates support-aware
+abstention and the no-overlap proposition. \\
+Off-policy shift & Unweighted audit can satisfy the audit-law target while
+failing under the deployment query law. & Supports the weighted/support-aware
+extension; not a main DSRL result. \\
+Official HDF5 pilots & Dataset-only and self-generated query pilots verified
+data paths but produced weak or misleading claim targets. & Kept as
+reproducibility diagnostics, not promoted. \\
+Weighted BC heads & Multi-head weighted BC ran locally but did not produce a
+stronger trained-proposer selection gap. & Negative model-search evidence. \\
+SafeFQL comparator & A direct comparison requires runnable checkpoints or code
+that emits the same fixed query blocks. & Open comparator target, not a
+completed experimental row. \\
+\bottomrule
+\end{tabular}
+\caption{Diagnostic inventory. These runs are useful because they constrain the
+claim form; they are not all positive headline evidence.}
+\label{tab:app-diagnostics}
+\end{table*}
+
+\end{document}

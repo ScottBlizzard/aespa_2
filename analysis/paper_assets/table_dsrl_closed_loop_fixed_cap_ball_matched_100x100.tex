@@ -1,0 +1,20 @@
+\begin{table}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llrrrr}
+\toprule
+Proposer & Cap & Audit K/N & Audit U95 & Test K/N & Test U95 \\
+\midrule
+CPQ & 1 & 0/300 & 0.99 & 0/300 & 0.99 \\
+CPQ & 4 & 0/300 & 0.99 & 0/300 & 0.99 \\
+CPQ & 8 & 0/300 & 0.99 & 0/300 & 0.99 \\
+\midrule
+COpt. & 1 & 253/300 & 87.69 & 256/300 & 88.59 \\
+COpt. & 4 & 253/300 & 87.69 & 256/300 & 88.59 \\
+COpt. & 8 & 253/300 & 87.69 & 256/300 & 88.59 \\
+\bottomrule
+\end{tabular}
+\caption{Pre-registered first-cap closed-loop audit on \texttt{OfflineBallCircle-v0}. K/N is the number of false issued episodes among issued episodes over three 100/100 audit/test seeds; U95 is the one-sided exact binomial 95\% upper bound, in percent.}
+\label{tab:first-cap-closed-loop-ball}
+\end{table}

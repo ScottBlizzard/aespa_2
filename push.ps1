@@ -8,22 +8,26 @@ $ErrorActionPreference = "Stop"
 $LocalRoot = "D:\AAAI_2"
 
 if ($Target -eq "4090") {
-    $Remote = "ccj@10.10.217.244:/home/ccj/workspace_1/aaai_2"
+    $RemoteHost = "ccj@10.10.217.244"
+    $RemotePath = "/home/ccj/workspace_1/aaai_2"
     $ScpArgs = @()
+    $SshArgs = @()
 } else {
-    $Remote = "root@10.91.11.250:/workspace/thymic_project/paper/aaai_2"
+    $RemoteHost = "root@10.91.11.250"
+    $RemotePath = "/workspace/thymic_project/paper/aaai_2"
     $ScpArgs = @("-P", "10008")
+    $SshArgs = @("-p", "10008")
 }
 
-Write-Host "Syncing src and workflow docs to $Target..."
+Write-Host "Syncing experiment code to $Target..."
+
+ssh @SshArgs $RemoteHost "mkdir -p '$RemotePath/src' '$RemotePath/scripts' '$RemotePath/outputs' '$RemotePath/analysis/paper_assets'"
+
+$Remote = "${RemoteHost}:${RemotePath}"
 
 scp @ScpArgs -r "$LocalRoot\src" "$Remote/"
-scp @ScpArgs "$LocalRoot\idea_blueprint.md" "$Remote/"
-scp @ScpArgs "$LocalRoot\EXPERIMENT_MANUAL.md" "$Remote/"
-scp @ScpArgs "$LocalRoot\EXPERIMENT_FIX_PLAN.md" "$Remote/"
-scp @ScpArgs "$LocalRoot\NEXT_STEPS.md" "$Remote/"
-scp @ScpArgs "$LocalRoot\experiment_report.md" "$Remote/"
-scp @ScpArgs "$LocalRoot\theory_proofs.md" "$Remote/"
+scp @ScpArgs -r "$LocalRoot\scripts" "$Remote/"
+
+ssh @SshArgs $RemoteHost "rm -rf '$RemotePath/src/__pycache__'"
 
 Write-Host "Done."
-

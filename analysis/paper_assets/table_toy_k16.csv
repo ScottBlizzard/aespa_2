@@ -1,0 +1,9 @@
+method,selected_false_certification,claim_yield,mean_reward,interpretation
+global_cp,0.479055,1.000000,0.941323,"marginal calibration fails after reward selection"
+selected_block_accept_or_abstain,0.000000,0.000000,0.000000,"safe but vacuous"
+reward_bin_ucb_20,0.000000,1.000000,0.891370,"strong local baseline repairs toy"
+reward_bin_ucb_50,0.000000,1.000000,0.901374,"near-oracle reward-bin baseline"
+rank_bin_ucb,0.024345,1.000000,0.823867,"controls risk with larger reward loss"
+crc_style_threshold_auditor,0.032165,1.000000,0.903426,"matches ACCS-v0 in this toy"
+accs_v0_finite_rule_auditor,0.032165,1.000000,0.903426,"finite-rule auditor controls selected risk"
+oracle_tau_0_96,0.000000,1.000000,0.901374,"oracle threshold"

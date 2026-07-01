@@ -1,0 +1,4 @@
+method,selected_false_certification,claim_yield,mean_reward,interpretation
+behavior_rescue_labels,0.000000,1.000000,0.941288,"behavior continuation labels appear safe"
+deployment_exploit_accept_all,0.814995,1.000000,0.941288,"deployment continuation changes residual risk"
+declared_policy_support_aware_tau,0.000000,1.000000,0.841077,"declared policy target repairs the certificate"
